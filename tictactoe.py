@@ -1,72 +1,79 @@
 import random;
 
-board = [["_", "_", "_"],
-        ["_", "_", "_"],
-        ["_", "_", "_"]]
+board = ["1","2","3","4","5","6","7","8","9"]
 
-user_symbol="X"
-computer_symbol="O"
+user_symbol="x"
+computer_symbol="o"
 winner_symbol=""
 
 def print_board():
-    for row in board:
-        for item in row:
-            print(item, end=" ")
-        print("\n")
+    for i in range(0, len(board), 3):
+        print('  '.join(map(str, board[i:i+3])))
+
+def validate_input():
+    while True:
+        user=input("Enter your move (position 1-9) : ")
+        try:
+            if int(user)-1>=0 and int(user)-1<=8:
+                break
+        except ValueError:
+            print("Invalid Input")
+            pass
+    return int(user)
 
 def user_input():
-    user_move = input("Enter your move x , y space-separated: ")
-    user_move = list(map(int, user_move.split()))
-    while board[user_move[0]][user_move[1]]==user_symbol or board[user_move[0]][user_move[1]]==computer_symbol:
-        print("Invalid Input. Try Again !!")
-        user_move = input("Enter your move x , y space-separated: ")
-        user_move = list(map(int, user_move.split()))
-    board[user_move[0]][user_move[1]]=user_symbol
+    user_move=validate_input()
+    while board[user_move-1]==user_symbol or board[user_move-1]==computer_symbol:
+        print("Enter a valid input")
+        user_move=validate_input()
+    board[user_move-1]=user_symbol
            
 
 def computer_input():
-    x=random.randint(0,2)
-    y=random.randint(0,2)
-    while board[x][y]==user_symbol or board[x][y]==computer_symbol:
-        x=random.randint(0,2)
-        y=random.randint(0,2)  
-    board[x][y]=computer_symbol
+    x=random.randint(0,8)
+    while board[x]==user_symbol or board[x]==computer_symbol:
+        x=random.randint(0,8)  
+    board[x]=computer_symbol
 
 def is_tie():
-    for row in board:
-        for item in row:
-            if item == user_symbol or item ==computer_symbol:
-                tie = True
-            else:
-                tie = False
-                return tie
+    for item in board:
+        if item == user_symbol or item ==computer_symbol:
+            tie = True
+        else:
+            tie = False
+            return tie
     return tie
 
 def has_won(player_symbol):
-    if board[0][0]==board[0][1]==board[0][2]==player_symbol :
+    if board[0]==board[1]==board[2]==player_symbol :
         return True
-    elif board[1][0]==board[1][1]==board[1][2]==player_symbol :
+    elif board[3]==board[4]==board[5]==player_symbol :
         return True
-    elif board[2][0]==board[2][1]==board[2][2]==player_symbol :
+    elif board[6]==board[7]==board[8]==player_symbol :
         return True
-    elif board[0][0]==board[1][0]==board[2][0]==player_symbol :
+    elif board[0]==board[3]==board[6]==player_symbol :
         return True
-    elif board[0][1]==board[1][1]==board[2][1]==player_symbol :
+    elif board[1]==board[4]==board[7]==player_symbol :
         return True
-    elif board[0][2]==board[1][2]==board[2][2]==player_symbol :
+    elif board[2]==board[5]==board[8]==player_symbol :
         return True
-    elif board[0][0]==board[1][1]==board[2][2]==player_symbol :
+    elif board[0]==board[4]==board[8]==player_symbol :
         return True
-    elif board[0][2]==board[1][1]==board[2][0]==player_symbol :
+    elif board[2]==board[4]==board[6]==player_symbol :
         return True
     else:
         return False
 
 user_symbol=input("Choose symbol X or O: ")
+while user_symbol!="X" and user_symbol!="O":
+    print("Please enter a valid input")
+    user_symbol=input("Choose symbol X or O only: ")
 if user_symbol=="X":
     computer_symbol="O"
 else:
     computer_symbol="X"
+
+print_board()
 
 while not has_won(user_symbol) and not has_won(computer_symbol) and not is_tie():
     user_input()
@@ -82,5 +89,3 @@ elif has_won(computer_symbol):
     print("You Lost, Better luck next time :)") 
 else:
     print("It's a tie :|")
-
-
